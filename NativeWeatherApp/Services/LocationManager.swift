@@ -2,6 +2,7 @@ import Foundation
 import CoreLocation
 
 final class LocationManager: NSObject, CLLocationManagerDelegate {
+    
     static let shared = LocationManager()
     let locationManager = CLLocationManager()
     
