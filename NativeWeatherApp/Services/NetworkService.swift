@@ -2,19 +2,12 @@ import UIKit
 
 private extension String {
     static let baseHourlyURL = "https://api.openweathermap.org/data/2.5/forecast?"
-    static let baseForecastUrl = ""
 }
 
 private enum Components: String {
-
     case apiKey = "appid=023a64eb49ca8b57ac5f5cfe0452fd7f"
     case units = "units=metric"
-    case language = "lang=ru"
-    
-    static func getLocation() -> String {
-        return "lat=" + LocationManager.shared.getLatitude() + "&" +
-               "lon=" + LocationManager.shared.getLongitude()
-    }
+    case language = "lang=en"
 }
 
 private enum PostTypes: String {
@@ -27,6 +20,8 @@ protocol INetworkService {
 }
 
 final class NetworkService: INetworkService {
+    
+    let locationManager = LocationManager()
     
     func getWeather(completion: @escaping((WeatherData?) -> Void)) {
         sendRequest(apiKey: .apiKey,
@@ -52,9 +47,10 @@ final class NetworkService: INetworkService {
         requestBody: Data? = nil,
         completion: @escaping(Data?) -> Void
     ) {
-
-        let baseUrlString = .baseHourlyURL + Components.getLocation() + "&" + apiKey.rawValue + "&" + units.rawValue + "&" + language.rawValue
-            guard let url = URL(string: baseUrlString) else { return }
+        guard let locationData = locationManager.getLocation() else { return }
+        let baseUrlString = .baseHourlyURL + locationData + "&" + apiKey.rawValue
+        let featuresUrl = baseUrlString + "&" + units.rawValue + "&" + language.rawValue
+        guard let url = URL(string: featuresUrl) else { return }
         
         var request = URLRequest(url: url)
         request.httpMethod = requestType.rawValue

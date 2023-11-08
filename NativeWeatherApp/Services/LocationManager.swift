@@ -3,30 +3,55 @@ import CoreLocation
 
 final class LocationManager: NSObject, CLLocationManagerDelegate {
     
-    static let shared = LocationManager()
     let locationManager = CLLocationManager()
+    
+    var location: CLLocation?
     
     override init() {
         super.init()
-        
         locationManager.delegate = self
+        requestLocation()
+    }
+    
+    func requestLocation() {
         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-        locationManager.requestAlwaysAuthorization()
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
     }
     
-    func searchLocation() {
-        guard let locValue: CLLocationCoordinate2D = locationManager.location?.coordinate else { return }
-        print("locations = \(locValue.latitude) \(locValue.longitude)")
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let location = locations.last else { return }
+        self.location = location
+        locationManager.startUpdatingLocation()
     }
     
-    func getLatitude() -> String {
-        return "\(locationManager.location?.coordinate.latitude ?? 0.0)"
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print(error.localizedDescription)
     }
-
-    func getLongitude() -> String {
-        return "\(locationManager.location?.coordinate.longitude ?? 0.0)"
+    
+    func getLocation() -> String? {
+        
+        guard let latitude = getLatitude(),
+              let longitude = getLongitude() else { return nil }
+        return "lat=" + latitude + "&" +
+        "lon=" + longitude
+    }
+    
+    private func getLatitude() -> String? {
+        guard let location else { return nil}
+        return "\(location.coordinate.latitude)"
+        
+    }
+    
+    private func getLongitude() -> String? {
+        guard let location else { return nil}
+        return "\(location.coordinate.longitude)"
+    }
+    
+    private func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+        if status == .notDetermined {
+            locationManager.requestWhenInUseAuthorization()
+        }
     }
 }
 

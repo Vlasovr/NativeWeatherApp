@@ -4,7 +4,7 @@
 <dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Хотите увидеть погоду точно в вашем месте?</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Хотите увидеть погоду точно в вашем месте?</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
