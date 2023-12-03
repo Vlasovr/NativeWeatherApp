@@ -21,8 +21,13 @@ enum Constants {
         static let temperatureFont = 80.0
     }
     
+    enum GettingStartedController {
+        static let enterButtonWidth = 300.0
+        static let enterButtonHeight = 300.0
+        static let warning = "Если хотите пропускать этот ход - разрешите доступ к геолокации при использовании"
+    }
+    
     enum WeatherController {
-        
         static let cloudImage = "cloud.sun.fill"
         static let cloudImageHeight = 300.0
         static let animationDuration = 3.0
@@ -92,5 +97,14 @@ enum Constants {
         static let firstrCharactersToDrop = 10
         static let lastCharactersToDrop = 6
         static let degreesMeasure = "°"
+    }
+    
+    enum Location {
+        static let latitude = "lat="
+        static let longitude = "lon="
+    }
+    enum ApiSettingsOperator {
+        static let and = "&"
+        static let citySetting = "q="
     }
 }

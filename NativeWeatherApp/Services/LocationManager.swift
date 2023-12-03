@@ -30,11 +30,10 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     }
     
     func getLocation() -> String? {
-        
         guard let latitude = getLatitude(),
               let longitude = getLongitude() else { return nil }
-        return "lat=" + latitude + "&" +
-        "lon=" + longitude
+        return Constants.Location.latitude + latitude + Constants.ApiSettingsOperator.and +
+        Constants.Location.longitude + longitude
     }
     
     private func getLatitude() -> String? {
@@ -54,5 +53,3 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         }
     }
 }
-
-

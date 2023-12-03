@@ -5,14 +5,13 @@ private extension String {
 }
 
 private enum Components: String {
-    case apiKey = "appid=023a64eb49ca8b57ac5f5cfe0452fd7f"
+    case apiKey = "appid=46ef8121e3dd01bf8281202be0002917"
     case units = "units=metric"
     case language = "lang=en"
 }
 
 private enum PostTypes: String {
     case GET
-    case POST
 }
 
 protocol INetworkService {
@@ -39,7 +38,25 @@ final class NetworkService: INetworkService {
         }
     }
     
+    func getWeather(city: String, completion: @escaping((WeatherData?) -> Void)) {
+        sendRequest(city: city,
+                    apiKey: .apiKey,
+                    units: .units,
+                    language: .language,
+                    requestType: .GET
+        ) { data in
+            guard let data else {
+                completion(nil)
+                return
+            }
+            
+            let array = try? JSONDecoder().decode(WeatherData.self, from: data)
+            completion(array)
+        }
+    }
+    
     private func sendRequest(
+        city: String? = nil,
         apiKey: Components,
         units: Components,
         language: Components,
@@ -47,9 +64,16 @@ final class NetworkService: INetworkService {
         requestBody: Data? = nil,
         completion: @escaping(Data?) -> Void
     ) {
-        guard let locationData = locationManager.getLocation() else { return }
-        let baseUrlString = .baseHourlyURL + locationData + "&" + apiKey.rawValue
-        let featuresUrl = baseUrlString + "&" + units.rawValue + "&" + language.rawValue
+        var baseUrlString = ""
+        if let city {
+            baseUrlString = .baseHourlyURL + Constants.ApiSettingsOperator.citySetting + city + Constants.ApiSettingsOperator.and + apiKey.rawValue
+        } else {
+            if let locationData = locationManager.getLocation() {
+                baseUrlString = .baseHourlyURL + locationData + Constants.ApiSettingsOperator.and + apiKey.rawValue
+            }
+        }
+        
+        let featuresUrl = baseUrlString + Constants.ApiSettingsOperator.and + units.rawValue + Constants.ApiSettingsOperator.and + language.rawValue
         guard let url = URL(string: featuresUrl) else { return }
         
         var request = URLRequest(url: url)
