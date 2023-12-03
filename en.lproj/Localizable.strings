@@ -1,0 +1,18 @@
+/* 
+  Localizable.strings
+  NativeWeatherApp
+
+  Created by Роман Власов on 26.10.23.
+  
+*/
+
+"Hello" = "Hello";
+"Weather" = "Weather";
+"Forecast" = "Forecast";
+"Tomorrow" = "Tomorrow";
+"Today" = "Today";
+"Cloudly" = "Cloudly";
+"Rainly" = "Rainly";
+"Foggy" = "Foggy";
+"Sunny" = "Sunny";
+"Snow" = "Snow";
