@@ -140,6 +140,11 @@ class WeatherController: UIViewController {
     }
     
     private func configureCollectionDataSource(_ weatherDataList: [Weather?]) {
+        if !(perDayWeatherDataSource.isEmpty && perHourWeatherDataSource.isEmpty) {
+            perDayWeatherDataSource.removeAll()
+            perHourWeatherDataSource.removeAll()
+        }
+        
         weatherDataList.forEach { [weak self] weather in
             if let weather {
                 if let description = weather.weather.first?.description,
@@ -152,7 +157,7 @@ class WeatherController: UIViewController {
                     
                     let cellModel = ForecastCellModel(temperature: temperatureString,
                                                       temperatureFeeling: temperatureFeelingString,
-                                                      date:  weather.dt_txt, 
+                                                      date:  weather.dt_txt,
                                                       weekDay: weekday,
                                                       description: description,
                                                       humidity: humidityString,
@@ -175,8 +180,8 @@ class WeatherController: UIViewController {
     
     private func bind() {
         viewModel.currentWeather.bind { weather in
-            DispatchQueue.main.async {
-                self.setupWeatherForecast(weather)
+            DispatchQueue.main.async { [weak self] in
+                self?.setupWeatherForecast(weather)
             }
         }
     }
@@ -186,9 +191,16 @@ extension WeatherController: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
         guard let text = textField.text,
               text != "" else { return }
-        viewModel.cityEntered(city: text)
+        viewModel.searchCityWeather(from: text)
+        viewModel.currentWeather.bind { [weak self] weather in
+            DispatchQueue.main.async {
+                self?.setupWeatherForecast(weather)
+            }
+        }
+
     }
 }
+
 extension WeatherController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         perHourWeatherDataSource.count
